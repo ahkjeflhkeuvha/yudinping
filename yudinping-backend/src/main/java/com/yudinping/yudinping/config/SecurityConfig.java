@@ -20,12 +20,13 @@ public class SecurityConfig {
         return http
             .csrf(csrf -> csrf.disable()) // CSRF 비활성화
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth").permitAll()
+                .requestMatchers("/auth/**", "/user2/login", "/user2/login?success=100", "/css/**", "/js/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/member/**").hasAnyRole("ADMIN", "MEMBER")
                 .requestMatchers("/user2/loginSuccess").hasAnyRole("USER3", "USER4", "USER5")
                 .anyRequest().authenticated()
             )
+
             .formLogin(login -> login
                 .loginPage("/user2/login") // 커스텀 로그인 페이지
                 .defaultSuccessUrl("/user2/loginSuccess") // 로그인 성공 후 이동 경로

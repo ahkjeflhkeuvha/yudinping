@@ -8,5 +8,5 @@ import com.yudinping.yudinping.entity.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    public List<User> findAllList();
+    public List<User> findAll();
 }   

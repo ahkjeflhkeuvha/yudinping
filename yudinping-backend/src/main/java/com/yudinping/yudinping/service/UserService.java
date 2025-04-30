@@ -22,7 +22,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> loadAllUser() {
+    public List<User> findAll() {
         return userRepository.findAll();
     }
 }
