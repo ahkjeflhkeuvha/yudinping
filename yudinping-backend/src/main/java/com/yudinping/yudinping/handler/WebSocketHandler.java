@@ -4,24 +4,29 @@ import java.io.IOException;
 // import java.net.http.WebSocket;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-@Component
+@Configuration
+@EnableWebSocket
 public class WebSocketHandler extends TextWebSocketHandler {
     private static final ConcurrentHashMap<String, WebSocketSession> Client = new ConcurrentHashMap<String, WebSocketSession>(); // 세션 정보 저장할 Client 해시맵
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception { // 연결 시 데이터 저장 함수
         Client.put(session.getId(), session);
+        session.sendMessage(new TextMessage("서버에 연결되었습니다.")); // 연결 시 클라이언트에게 메시지 전송
+        System.out.println("Client connected: " + session.getId());
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception { // 연결 종료 시 데이터 삭제 함수
         Client.remove(session.getId()); 
+        System.out.println("Client disconnected: " + session.getId());
     }
 
     @Override
@@ -37,7 +42,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 }
             }
         });
+
+        session.sendMessage(new TextMessage("서버에서 받은 메시지: " + message.getPayload()));
     }
-
-
 }
+
