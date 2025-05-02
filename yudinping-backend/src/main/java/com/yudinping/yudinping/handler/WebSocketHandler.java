@@ -11,7 +11,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 @Component
-public class WebSocketHandlerRegistry extends TextWebSocketHandler {
+public class WebSocketHandler extends TextWebSocketHandler {
     private static final ConcurrentHashMap<String, WebSocketSession> Client = new ConcurrentHashMap<String, WebSocketSession>(); // 세션 정보 저장할 Client 해시맵
 
     @Override
@@ -26,6 +26,7 @@ public class WebSocketHandlerRegistry extends TextWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        System.out.println("Message received: " + message.getPayload() + " from " + session.getId());
         String id = session.getId(); // 메시지 보낸 아이디
         Client.entrySet().forEach(arg -> {
             if(!arg.getKey().equals(id)) { // 같은 아이디가 아니며 메시지 전송
