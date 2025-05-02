@@ -18,14 +18,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-        .csrf(csrf -> csrf.disable()) // CSRF 끄기
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/ws/**", "/user2/**", "/auth/**").permitAll() // 여기 추가
-            .anyRequest().permitAll() // 임시로 모든 요청 허용
-        )
-        .formLogin(form -> form.disable()) // ⭐ 로그인 기능 완전 비활성화
-        .logout(logout -> logout.disable()) // ⭐ 로그아웃 기능도 비활성화
-        .build();
+            .csrf(csrf -> csrf.disable()) // CSRF 끄기
+            .authorizeHttpRequests(auth -> auth
+                // .requestMatchers("/ws/**", "/user2/**", "/auth/**").permitAll() // 여기에 필요한 경로 허용
+                .anyRequest().permitAll() // 나머지 요청은 모두 허용 (이 부분이 중요)
+            )
+            .formLogin(form -> form.disable()) // 로그인 기능 완전 비활성화
+            .logout(logout -> logout.disable()) // 로그아웃 기능도 비활성화
+            
+            .build();
     }
 
     @Bean
