@@ -8,12 +8,13 @@ import org.springframework.stereotype.Repository;
 import com.yudinping.yudinping.entity.ChatEntity;
 
 @Repository
-public interface ChatRepository extends JpaRepository<ChatEntity, Long>{
-    public List<ChatEntity> findAll();
-    
-    public List<ChatEntity> findBySenderId(String senderId);
+public interface ChatRepository extends JpaRepository<ChatEntity, Long> {
+    @Override
+    List<ChatEntity> findAll();
 
-    public List<ChatEntity> findByReceiverId(String receiverId);
+    List<ChatEntity> findBySenderId(String senderId);
 
-    public List<ChatEntity> findBySenderIdAndReceiverId(String senderId, String receiverId);
+    List<ChatEntity> findByReceiverId(String receiverId);
+
+    List<ChatEntity> findBySenderIdAndReceiverId(String senderId, String receiverId);
 }

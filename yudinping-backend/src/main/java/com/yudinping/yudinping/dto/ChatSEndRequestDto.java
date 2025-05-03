@@ -1,8 +1,13 @@
 package com.yudinping.yudinping.dto;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -11,6 +16,7 @@ public class ChatSendRequestDto {
     private String senderId;
     private String receiverId;
     private String message;
+    private String createdDate;
 
     @Builder
     public ChatSendRequestDto(String roomId, String senderId, String receiverId, String message) {
@@ -18,13 +24,6 @@ public class ChatSendRequestDto {
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.message = message;
-    }
-
-    public ChatSendRequestDto toEntity() {
-        return ChatSendRequestDto.builder().roomId(roomId)
-                .senderId(senderId)
-                .receiverId(receiverId)
-                .message(message)
-                .build();
+        this.createdDate = LocalDate.now().format(DateTimeFormatter.ISO_DATE);
     }
 }
