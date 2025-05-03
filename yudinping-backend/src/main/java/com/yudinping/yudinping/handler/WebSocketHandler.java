@@ -4,6 +4,7 @@ import java.io.IOException;
 // import java.net.http.WebSocket;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.json.simple.JSONObject;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -19,7 +20,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception { // 연결 시 데이터 저장 함수
         Client.put(session.getId(), session);
-        session.sendMessage(new TextMessage("서버에 연결되었습니다.")); // 연결 시 클라이언트에게 메시지 전송
         System.out.println("Client connected: " + session.getId());
     }
 
@@ -31,18 +31,25 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        System.out.println("Message received: " + message.getPayload() + " from " + session.getId());
+        JSONObject outer = new JSONObject();
+        outer.put("type", "Receiver");
+
+        JSONObject payload = (JSONObject) org.json.simple.JSONValue.parse(message.getPayload()); // 문자열로 온 payload를 다시 JSONObject로 파싱
+        outer.put("message", payload);
         String id = session.getId(); // 메시지 보낸 아이디
         Client.entrySet().forEach(arg -> {
             if(!arg.getKey().equals(id)) { // 같은 아이디가 아니며 메시지 전송
-                System.out.println("Message id : "  + arg.getKey());
                 try {
-                    arg.getValue().sendMessage(message);
+                    arg.getValue().sendMessage(new TextMessage(outer.toString()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         });
+        JSONObject sender = new JSONObject();
+        sender.put("type", "Sender");
+        sender.put("message", payload);
+        session.sendMessage(new TextMessage(sender.toString())); // 메시지 보낸 아이디에게 메시지 전송
     }
 }
 
