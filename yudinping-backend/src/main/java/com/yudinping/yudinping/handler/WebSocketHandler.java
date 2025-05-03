@@ -35,6 +35,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         String id = session.getId(); // 메시지 보낸 아이디
         Client.entrySet().forEach(arg -> {
             if(!arg.getKey().equals(id)) { // 같은 아이디가 아니며 메시지 전송
+                System.out.println("Message id : "  + arg.getKey());
                 try {
                     arg.getValue().sendMessage(message);
                 } catch (IOException e) {
@@ -42,8 +43,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 }
             }
         });
-
-        session.sendMessage(new TextMessage("서버에서 받은 메시지: " + message.getPayload()));
     }
 }
 
