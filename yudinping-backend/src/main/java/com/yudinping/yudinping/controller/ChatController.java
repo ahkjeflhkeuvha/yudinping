@@ -7,13 +7,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yudinping.yudinping.dto.ChatSendRequestDto;
+import com.yudinping.yudinping.service.ChatService;
 
 @RestController
 @RequestMapping("/chat")
 public class ChatController {
+
+    private final ChatService chatService;
+
+    public ChatController(ChatService chatService) {
+        this.chatService = chatService;
+    }
+
     @PostMapping("{id}/send")
-    public String chat(@RequestBody ChatSendRequestDto chatSendRequestDto, @PathVariable String id) {
-        System.out.println("ChatController chat" + id);
-        return id;
+    public void chat(@RequestBody ChatSendRequestDto chatSendRequestDto, @PathVariable String id) {
+        System.out.println("ChatController chat " + id);
+        chatService.saveChat(id, chatSendRequestDto);
     }
 }
