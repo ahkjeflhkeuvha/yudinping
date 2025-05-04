@@ -15,12 +15,16 @@ public class UserService {
 
     @Transactional
     public boolean findByUseridAndPassword(String userid, String password) {
-        UserEntity user = (UserEntity)userRepository.findByUseridAndPassword(userid, password);
+        try {
+            UserEntity user = userRepository.findByUseridAndPassword(userid, password);
 
-        if (user != null) {
-            return true;
-        } else {
-            return false;
+            if (user != null) {
+                return true;
+            } else {
+                throw new RuntimeException("User not found");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred while finding the user", e);
         }
     }
 }
