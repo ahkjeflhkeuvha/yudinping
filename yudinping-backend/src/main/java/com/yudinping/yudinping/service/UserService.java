@@ -1,28 +1,26 @@
 package com.yudinping.yudinping.service;
 
-import java.util.List; // Replace with your actual User model package
+import org.springframework.stereotype.Service; // Replace with your actual User model package
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service; // Replace with your actual UserRepository package
+import com.yudinping.yudinping.entity.UserEntity;
+import com.yudinping.yudinping.repository.UserRepository; // Replace with your actual UserRepository package
 
-import com.yudinping.yudinping.entity.User;
-import com.yudinping.yudinping.repository.UserRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
-
-    @Autowired
     private final UserRepository userRepository;
 
-    public UserService() {
-        this.userRepository = null;
-    }
+    @Transactional
+    public boolean findByUseridAndPassword(String userid, String password) {
+        UserEntity user = (UserEntity)userRepository.findByUseridAndPassword(userid, password);
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    public List<User> findAll() {
-        return userRepository.findAll();
+        if (user != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
