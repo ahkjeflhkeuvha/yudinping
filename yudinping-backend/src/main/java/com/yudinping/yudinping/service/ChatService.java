@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import com.yudinping.yudinping.dto.ChatSendRequestDto;
 import com.yudinping.yudinping.repository.ChatRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 import java.time.LocalDate;
 import com.yudinping.yudinping.entity.ChatEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,5 +26,11 @@ public class ChatService {
             .build();
         
         chatRepository.save(chat);
+    }
+
+    @Transactional
+    public List<ChatEntity> getChatByRoomIdAndReceiverId(String roomid, String receiverid) {
+        List<ChatEntity> chatList = chatRepository.findByRoomIdAndReceiverId(roomid, receiverid);
+        return chatList;
     }
 }
