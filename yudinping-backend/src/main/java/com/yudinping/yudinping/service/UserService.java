@@ -17,7 +17,7 @@ public class UserService {
     public boolean findByUseridAndPassword(String userid, String password) {
         try {
             UserEntity user = userRepository.findByUseridAndPassword(userid, password);
-
+            // 사용자 정보 존재 여부 확인
             if (user != null) {
                 return true;
             } else {
