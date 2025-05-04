@@ -38,6 +38,13 @@ public class WebSocketHandler extends TextWebSocketHandler {
         JSONObject jsonobject = (JSONObject) org.json.simple.JSONValue.parse(message.getPayload());
         String roomId = (String) jsonobject.get("roomId");
 
+        if (roomId == null || roomId.trim().isEmpty()) {
+            System.out.println("roomId is null or empty! 받은 메시지: " + message.getPayload());
+            return; // 처리 중단
+        }
+
+        System.out.println("roomId: " + roomId);
+
         // 방이 없으면 만들고, 해당 세션을 방에 추가
         roomMap.putIfAbsent(roomId, new ConcurrentHashMap<>());
         roomMap.get(roomId).put(session.getId(), session);
