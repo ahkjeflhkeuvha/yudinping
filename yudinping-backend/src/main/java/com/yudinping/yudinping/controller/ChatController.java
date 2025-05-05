@@ -33,7 +33,7 @@ public class ChatController {
 
     @GetMapping("/{roomid}/{senderid}")
     public List<ChatEntity> getMethodName(@PathVariable String roomid, @PathVariable String senderid) {
-        return chatService.getChatByRoomIdAndSenderId(roomid, senderid);
+        return chatService.getChatByRoomIdAndSenderIdOrReceiverId(roomid, senderid);
     }
 
     @GetMapping("/{roomid}")
