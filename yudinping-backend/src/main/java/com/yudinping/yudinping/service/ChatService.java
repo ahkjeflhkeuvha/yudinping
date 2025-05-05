@@ -29,8 +29,14 @@ public class ChatService {
     }
 
     @Transactional
-    public List<ChatEntity> getChatByRoomIdAndReceiverId(String roomid, String receiverid) {
-        List<ChatEntity> chatList = chatRepository.findByRoomIdAndReceiverId(roomid, receiverid);
+    public List<ChatEntity> getChatByRoomIdAndSenderId(String roomid, String senderid) {
+        List<ChatEntity> chatList = chatRepository.findByRoomIdAndSenderId(roomid, senderid);
+        return chatList;
+    }
+
+    @Transactional
+    public List<ChatEntity> findByRoomId(String roomid) {
+        List<ChatEntity> chatList = chatRepository.findByRoomId(roomid);
         return chatList;
     }
 }

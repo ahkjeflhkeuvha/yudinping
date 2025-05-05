@@ -12,6 +12,8 @@ public interface ChatRepository extends JpaRepository<ChatEntity, Long> {
     @Override
     List<ChatEntity> findAll();
 
+    List<ChatEntity> findByRoomId(String roomId);
+
     List<ChatEntity> findBySenderId(String senderId);
 
     List<ChatEntity> findByReceiverId(String receiverId);
@@ -19,4 +21,6 @@ public interface ChatRepository extends JpaRepository<ChatEntity, Long> {
     List<ChatEntity> findBySenderIdAndReceiverId(String senderId, String receiverId);
 
     List<ChatEntity> findByRoomIdAndReceiverId(String roomId, String receiverId);
+
+    List<ChatEntity> findByRoomIdAndSenderId(String roomId, String sender);
 }

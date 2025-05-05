@@ -31,9 +31,14 @@ public class ChatController {
     }
 
 
-    @GetMapping("/{roomid}/{receiverid}")
-    public List<ChatEntity> getMethodName(@PathVariable String roomid, @PathVariable String receiverid) {
-        return chatService.getChatByRoomIdAndReceiverId(roomid, receiverid);
+    @GetMapping("/{roomid}/{senderid}")
+    public List<ChatEntity> getMethodName(@PathVariable String roomid, @PathVariable String senderid) {
+        return chatService.getChatByRoomIdAndSenderId(roomid, senderid);
+    }
+
+    @GetMapping("/{roomid}")
+    public List<ChatEntity> getAllChatEntitys(@PathVariable String roomid) {
+        return chatService.findByRoomId(roomid);
     }
     
 }
