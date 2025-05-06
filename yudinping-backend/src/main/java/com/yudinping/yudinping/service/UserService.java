@@ -27,4 +27,21 @@ public class UserService {
             throw new RuntimeException("An error occurred while finding the user", e);
         }
     }
+
+    @Transactional
+    public boolean signup(String userid, String password) {
+        try {
+            if (userRepository.findByUseridAndPassword(userid, password) != null) {
+                throw new RuntimeException("User already exists");
+            } else {
+                UserEntity user = new UserEntity();
+                user.setUserid(userid);
+                user.setPassword(password);
+                userRepository.save(user);
+                return true;
+            }
+        } catch(Exception e) {
+            throw new RuntimeException("An error occurred while checking user existence", e);   
+        }
+    } 
 }

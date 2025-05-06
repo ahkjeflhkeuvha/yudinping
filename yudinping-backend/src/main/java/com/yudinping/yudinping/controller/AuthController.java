@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.yudinping.yudinping.service.UserService;
 
 import com.yudinping.yudinping.dto.LoginDto;
+import com.yudinping.yudinping.dto.SignUpDto;
 
 @RestController
 @RequestMapping("/auth")
@@ -21,5 +22,10 @@ public class AuthController {
     @PostMapping("/login")
     public void login(@RequestBody LoginDto user) {
         this.userService.findByUseridAndPassword(user.getUserid(), user.getPassword());
+    }
+
+    @PostMapping("/signup")
+    public void signup(@RequestBody SignUpDto user) {
+        this.userService.signup(user.getUserid(), user.getPassword());
     }
 }
