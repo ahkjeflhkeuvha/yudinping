@@ -22,6 +22,7 @@ public class UserService {
                 return true;
             } else {
                 throw new RuntimeException("User not found");
+                // return false;
             }
         } catch (Exception e) {
             throw new RuntimeException("An error occurred while finding the user", e);

@@ -1,14 +1,17 @@
 package com.yudinping.yudinping.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import com.yudinping.yudinping.service.UserService;
 
 import com.yudinping.yudinping.dto.LoginDto;
 import com.yudinping.yudinping.dto.SignUpDto;
+import com.yudinping.yudinping.service.UserService;
 
 @RestController
 @RequestMapping("/auth")
@@ -25,7 +28,14 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public void signup(@RequestBody SignUpDto user) {
-        this.userService.signup(user.getUserid(), user.getPassword());
+    public ResponseEntity<?> signup(@RequestBody SignUpDto dto) {
+        try {
+            boolean result = userService.signup(dto.getUserid(), dto.getPassword());
+            return ResponseEntity.ok().body(Map.of("message", "회원가입 성공!"));
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("message", e.getMessage()));
+        }
     }
 }
