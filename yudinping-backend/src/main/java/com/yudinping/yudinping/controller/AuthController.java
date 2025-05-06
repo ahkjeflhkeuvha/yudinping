@@ -30,7 +30,7 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignUpDto dto) {
         try {
-            boolean result = userService.signup(dto.getUserid(), dto.getPassword());
+            boolean result = userService.signup(dto.getUserid(), dto.getPassword(), dto.getName());
             return ResponseEntity.ok().body(Map.of("message", "회원가입 성공!"));
         } catch (RuntimeException e) {
             return ResponseEntity
