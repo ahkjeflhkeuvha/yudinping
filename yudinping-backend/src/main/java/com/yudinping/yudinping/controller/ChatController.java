@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yudinping.yudinping.dto.ChatSendRequestDto;
 import com.yudinping.yudinping.entity.ChatEntity;
+import com.yudinping.yudinping.entity.ChatReturnEntity;
 import com.yudinping.yudinping.service.ChatService;
 
 
@@ -37,7 +38,7 @@ public class ChatController {
     }
 
     @GetMapping("/{roomid}")
-    public List<ChatEntity> getAllChatEntitys(@PathVariable String roomid) {
+    public List<ChatReturnEntity> getAllChatEntitys(@PathVariable String roomid) {
         return chatService.findByRoomId(roomid);
     }
     

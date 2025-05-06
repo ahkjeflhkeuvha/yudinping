@@ -1,19 +1,28 @@
 package com.yudinping.yudinping.service;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.yudinping.yudinping.dto.ChatSendRequestDto;
-import com.yudinping.yudinping.repository.ChatRepository;
-import lombok.RequiredArgsConstructor;
-import java.util.List;
-import java.time.LocalDate;
 import com.yudinping.yudinping.entity.ChatEntity;
-import org.springframework.transaction.annotation.Transactional;
+import com.yudinping.yudinping.entity.ChatReturnEntity;
+import com.yudinping.yudinping.entity.UserEntity;
+import com.yudinping.yudinping.repository.ChatRepository;
+import com.yudinping.yudinping.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class ChatService {
     private final ChatRepository chatRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public void saveChat(String roomId, ChatSendRequestDto dto) {
@@ -41,10 +50,34 @@ public class ChatService {
         return chatList;
     }
 
-
     @Transactional
-    public List<ChatEntity> findByRoomId(String roomid) {
+    public List<ChatReturnEntity> findByRoomId(String roomid) {
         List<ChatEntity> chatList = chatRepository.findByRoomId(roomid);
-        return chatList;
+
+        // senderId들만 모아 중복 없이 Set으로 변환
+        Set<String> senderIds = chatList.stream()
+                .map(ChatEntity::getSenderId)
+                .collect(Collectors.toSet());
+
+        // 한 번에 유저들 조회 (in 절로)
+        List<UserEntity> users = userRepository.findByUseridIn(senderIds);
+
+        // Map으로 변환 (userId -> name)
+        Map<String, String> userIdToNameMap = users.stream()
+                .collect(Collectors.toMap(UserEntity::getUserid, UserEntity::getName));
+
+        // 최종 결과 매핑
+        return chatList.stream()
+                .map(chat -> ChatReturnEntity.builder()
+                        .id(chat.getId())
+                        .roomId(chat.getRoomId())
+                        .senderId(chat.getSenderId())
+                        .receiverId(chat.getReceiverId())
+                        .message(chat.getMessage())
+                        .createdDate(chat.getCreatedDate())
+                        .name(userIdToNameMap.get(chat.getSenderId()))
+                        .build())
+                .collect(Collectors.toList());
     }
+
 }
