@@ -16,7 +16,7 @@ public class UserService {
     @Transactional
     public boolean findByUseridAndPassword(String userid, String password) {
         try {
-            UserEntity user = userRepository.findByUseridAndPassword(userid, password);
+            UserEntity user = userRepository.findByUserid(userid);
             // 사용자 정보 존재 여부 확인
             if (user != null) {
                 return true;
@@ -30,14 +30,15 @@ public class UserService {
     }
 
     @Transactional
-    public boolean signup(String userid, String password) {
+    public boolean signup(String userid, String password, String name) {
         try {
-            if (userRepository.findByUseridAndPassword(userid, password) != null) {
+            if (userRepository.findByUserid(userid) != null) {
                 throw new RuntimeException("User already exists");
             } else {
                 UserEntity user = new UserEntity();
                 user.setUserid(userid);
                 user.setPassword(password);
+                user.setName(name);
                 userRepository.save(user);
                 return true;
             }

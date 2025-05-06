@@ -6,5 +6,7 @@ import com.yudinping.yudinping.entity.UserEntity;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
+    public UserEntity findByUserid(String userid);
+
     public UserEntity findByUseridAndPassword(String userid, String password);
 }   
