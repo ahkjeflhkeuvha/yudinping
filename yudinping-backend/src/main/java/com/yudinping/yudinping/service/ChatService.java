@@ -1,11 +1,15 @@
 package com.yudinping.yudinping.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.ahocorasick.trie.Emit;
+import org.ahocorasick.trie.Trie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,17 +28,45 @@ public class ChatService {
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
 
+    ArrayList<String> badWords = new ArrayList<>(List.of("존나", "ㅈㄴ", "존ㄴ", "ㅈㄹ", "ㅁㅊ"));
+
+    @Transactional
+    public void checkChat(String message) throws IllegalArgumentException {
+        Trie trie = Trie.builder()
+            .addKeywords(badWords)
+            .build();
+
+        Collection<Emit> emits = trie.parseText(message);
+
+        if(!emits.isEmpty()) {
+            for (Emit emit : emits) {
+                String keyword = emit.getKeyword();
+                System.out.println("Bad word found: " + keyword);
+            }
+            throw new IllegalArgumentException("Bad words are not allowed in chat messages.");
+        } else {
+            System.out.println("No bad words found.");
+        }
+
+    }
+
     @Transactional
     public void saveChat(String roomId, ChatSendRequestDto dto) {
-        ChatEntity chat = ChatEntity.builder()
-            .roomId(dto.getRoomId())
-            .senderId(dto.getSenderId())
-            .receiverId(dto.getReceiverId())
-            .message(dto.getMessage())
-            .createdDate(LocalDate.now())
-            .build();
-        
-        chatRepository.save(chat);
+        try {
+            checkChat(dto.getMessage());
+            ChatEntity chat = ChatEntity.builder()
+                .roomId(dto.getRoomId())
+                .senderId(dto.getSenderId())
+                .receiverId(dto.getReceiverId())
+                .message(dto.getMessage())
+                .createdDate(LocalDate.now())
+                .build();
+            
+            chatRepository.save(chat);
+        } catch (Exception e) {
+            System.out.println("Error saving chat: " + e.getMessage());
+            // Handle the exception as needed (e.g., log it, rethrow it, etc.)
+        }
     }
 
     @Transactional

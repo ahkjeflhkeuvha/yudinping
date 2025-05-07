@@ -2,6 +2,7 @@ package com.yudinping.yudinping.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,10 +27,19 @@ public class ChatController {
     }
 
     @PostMapping("{id}/send")
-    public void chat(@RequestBody ChatSendRequestDto chatSendRequestDto, @PathVariable String id) {
-        System.out.println("ChatController chat " + id);
-        chatService.saveChat(id, chatSendRequestDto);
+    public ResponseEntity<?> chat(@RequestBody ChatSendRequestDto chatSendRequestDto, @PathVariable String id) {
+        try {
+            chatService.checkChat(chatSendRequestDto.getMessage());
+            chatService.saveChat(id, chatSendRequestDto);
+            return ResponseEntity.ok().build(); // 성공 응답
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage()); // 400 에러 반환
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("서버 오류가 발생했습니다.");
+        }
     }
+
+    
 
 
     @GetMapping("/{roomid}/{senderid}")
