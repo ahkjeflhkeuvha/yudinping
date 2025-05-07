@@ -28,7 +28,7 @@ public class ChatService {
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
 
-    ArrayList<String> badWords = new ArrayList<>(List.of("존나", "ㅈㄴ", "존ㄴ", "ㅈㄹ", "ㅁㅊ"));
+    ArrayList<String> badWords = new ArrayList<>(List.of("존나", "ㅈㄴ", "존ㄴ", "ㅈㄹ", "ㅁㅊ", "음탕"));
 
     @Transactional
     public void checkChat(String message) throws IllegalArgumentException {
