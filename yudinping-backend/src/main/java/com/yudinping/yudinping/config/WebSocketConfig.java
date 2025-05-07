@@ -7,16 +7,17 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 
 import com.yudinping.yudinping.handler.WebSocketHandler;
 
-import lombok.RequiredArgsConstructor;
-
 @Configuration
 @EnableWebSocket // 사용 허용
-@RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketConfigurer {
+    private final WebSocketHandler webSocketHandler;
+
+    public WebSocketConfig(WebSocketHandler webSocketHandler) {
+        this.webSocketHandler = webSocketHandler;
+    }
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        System.out.println("WebSocketConfig registerWebSocketHandlers");
-        registry.addHandler(new WebSocketHandler(), "/ws/chat").setAllowedOrigins("*"); // 모든 도메인 혀용
+        registry.addHandler(webSocketHandler, "/ws/chat").setAllowedOrigins("*");
     }
 }

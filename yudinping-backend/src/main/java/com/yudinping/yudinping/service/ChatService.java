@@ -32,6 +32,11 @@ public class ChatService {
 
     @Transactional
     public void checkChat(String message) throws IllegalArgumentException {
+        if (message == null || message.trim().isEmpty()) {
+            return;
+        }
+
+
         Trie trie = Trie.builder()
             .addKeywords(badWords)
             .build();
@@ -39,15 +44,9 @@ public class ChatService {
         Collection<Emit> emits = trie.parseText(message);
 
         if(!emits.isEmpty()) {
-            for (Emit emit : emits) {
-                String keyword = emit.getKeyword();
-                System.out.println("Bad word found: " + keyword);
-            }
+            System.out.println("에러데스..");
             throw new IllegalArgumentException("Bad words are not allowed in chat messages.");
-        } else {
-            System.out.println("No bad words found.");
         }
-
     }
 
     @Transactional

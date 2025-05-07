@@ -6,23 +6,20 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.yudinping.yudinping.service.ChatService;
 
-@Configuration
-@EnableWebSocket
+@Component  
 public class WebSocketHandler extends TextWebSocketHandler {
 
     private static final ConcurrentHashMap<String, WebSocketSession> Client = new ConcurrentHashMap<>();
     private static final Map<String, Map<String, WebSocketSession>> roomMap = new ConcurrentHashMap<>();
 
-    // 💡 ChatService 주입받기
     @Autowired
     private ChatService chatService;
 
@@ -43,7 +40,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         JSONObject jsonobject = (JSONObject) org.json.simple.JSONValue.parse(message.getPayload());
         String roomId = (String) jsonobject.get("roomId");
-        String msg = (String) jsonobject.get("message");
+        String msg = (String) jsonobject.get("content");
 
         if (roomId == null || roomId.trim().isEmpty()) {
             System.out.println("roomId is null or empty! 받은 메시지: " + message.getPayload());
@@ -52,13 +49,17 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
         // 욕설 체크
         try {
+            System.out.println("check 전 msg: " + msg);
             chatService.checkChat(msg);
+            System.out.println("check 후"); // 이거 안 뜨면 예외 발생한 거야
         } catch (IllegalArgumentException e) {
             JSONObject errorResponse = new JSONObject();
             errorResponse.put("type", "Error");
             errorResponse.put("message", e.getMessage());
 
+
             session.sendMessage(new TextMessage(errorResponse.toString()));
+
             return; // 욕설이면 더 이상 전송하지 않음
         }
 
