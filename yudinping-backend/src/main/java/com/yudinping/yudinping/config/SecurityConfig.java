@@ -32,9 +32,9 @@ public class SecurityConfig {
                 response.getWriter().write("{\"message\": \"로그인이 필요합니다.\"}");
             })
         )
-        .formLogin(form -> form.disable()) // 👉 이거 중요!!
-        .httpBasic(httpBasic -> httpBasic.disable()) // 👉 이것도 꺼주는 게 좋음
-        .logout(logout -> logout.disable()) // 필요 없으면 꺼도 됨
+        .formLogin(form -> form.disable()) 
+        .httpBasic(httpBasic -> httpBasic.disable()) 
+        .logout(logout -> logout.disable()) 
         .build();
     }
 
